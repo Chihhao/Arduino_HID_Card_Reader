@@ -1,7 +1,6 @@
 #define MAX_BITS 100                 // max number of bits 
 #define WEIGAND_WAIT_TIME  3000      // time to wait for another weigand pulse.  
 
-
 unsigned char databits[MAX_BITS];    // stores all of the data bits
 volatile unsigned int bitCount = 0;
 unsigned char flagDone;              // goes low when data is currently being captured
@@ -16,13 +15,9 @@ volatile unsigned long bitHolder2 = 0;
 volatile unsigned long cardChunk1 = 0;
 volatile unsigned long cardChunk2 = 0;
 
-
-///////////////////////////////////////////////////////
 // Process interrupts
-
 // interrupt that happens when INTO goes low (0 bit)
-void ISR_INT0()
-{
+void ISR_INT0(){
   //Serial.print("0");
   bitCount++;
   flagDone = 0;
@@ -34,13 +29,11 @@ void ISR_INT0()
       bitHolder2 = bitHolder2 << 1;
   }
     
-  weigand_counter = WEIGAND_WAIT_TIME;  
-  
+  weigand_counter = WEIGAND_WAIT_TIME;
 }
 
 // interrupt that happens when INT1 goes low (1 bit)
-void ISR_INT1()
-{
+void ISR_INT1(){
   //Serial.print("1");
   databits[bitCount] = 1;
   bitCount++;
@@ -58,21 +51,13 @@ void ISR_INT1()
   weigand_counter = WEIGAND_WAIT_TIME;  
 }
 
-
-
-
-///////////////////////////////////////////////////////
-// SETUP function
-void setup()
-{
+void setup(){
   pinMode(13, OUTPUT);  // LED
   pinMode(2, INPUT);     // DATA0 (INT0)
   pinMode(3, INPUT);     // DATA1 (INT1)
   
   Serial.begin(9600);
   Serial.println("RFID Reader Started");
-  
-
   
   // binds the ISR functions to the falling edge of INTO and INT1
   attachInterrupt(0, ISR_INT0, FALLING);  
@@ -81,15 +66,9 @@ void setup()
   weigand_counter = WEIGAND_WAIT_TIME;
 }
 
-
-///////////////////////////////////////////////////////
-// LOOP function
-void loop()
-{
+void loop(){
   // This waits to make sure that there have been no more data pulses before processing data
-  if (!flagDone) {
-
-    
+  if (!flagDone) {    
     if (--weigand_counter == 0)
       flagDone = 1;  
   }
@@ -115,10 +94,8 @@ void loop()
   }
 }
 
-///////////////////////////////////////////////////////
 // PRINTBITS function
-void printBits()
-{
+void printBits(){
       // I really hope you can figure out what this function does
       /*
       Serial.print(bitCount);
@@ -142,96 +119,76 @@ void printBits()
       Serial.println(cardCode);
 }
 
-
-///////////////////////////////////////////////////////
-// SETUP function
-void getCardNumAndSiteCode()
-{
+void getCardNumAndSiteCode(){
      unsigned char i;
   
     // we will decode the bits differently depending on how many bits we have
     // see www.pagemac.com/azure/data_formats.php for more info
     // also specifically: www.brivo.com/app/static_data/js/calculate.js
-    switch (bitCount) {
-
-      
-    ///////////////////////////////////////
-    // standard 26 bit format
-    // facility code = bits 2 to 9  
-    case 26:
-      for (i=1; i<9; i++)
-      {
-         facilityCode <<=1;
-         facilityCode |= databits[i];
-      }
-      
-      // card code = bits 10 to 23
-      for (i=9; i<25; i++)
-      {
-         cardCode <<=1;
-         cardCode |= databits[i];
-      }
-      break;
-
-    ///////////////////////////////////////
-    // 33 bit HID Generic    
-    case 33:  
-      for (i=1; i<8; i++)
-      {
-         facilityCode <<=1;
-         facilityCode |= databits[i];
-      }
-      
-      // card code
-      for (i=8; i<32; i++)
-      {
-         cardCode <<=1;
-         cardCode |= databits[i];
-      }    
-      break;
-
-    ///////////////////////////////////////
-    // 34 bit HID Generic 
-    case 34:  
-      for (i=1; i<17; i++)
-      {
-         facilityCode <<=1;
-         facilityCode |= databits[i];
-      }
-      
-      // card code
-      for (i=17; i<33; i++)
-      {
-         cardCode <<=1;
-         cardCode |= databits[i];
-      }    
-      break;
- 
-    ///////////////////////////////////////
-    // 35 bit HID Corporate 1000 format
-    // facility code = bits 2 to 14     
-    case 35:  
-      for (i=2; i<14; i++)
-      {
-         facilityCode <<=1;
-         facilityCode |= databits[i];
-      }
-      
-      // card code = bits 15 to 34
-      for (i=14; i<34; i++)
-      {
-         cardCode <<=1;
-         cardCode |= databits[i];
-      }    
-      break;
+    
+    switch (bitCount){      
+        // standard 26 bit format
+        // facility code = bits 2 to 9  
+        case 26:
+          for (i=1; i<9; i++){
+             facilityCode <<=1;
+             facilityCode |= databits[i];
+          }
+          
+          // card code = bits 10 to 23
+          for (i=9; i<25; i++){
+             cardCode <<=1;
+             cardCode |= databits[i];
+          }
+          break;
+        
+        // 33 bit HID Generic    
+        case 33:  
+          for (i=1; i<8; i++){
+             facilityCode <<=1;
+             facilityCode |= databits[i];
+          }
+          
+          // card code
+          for (i=8; i<32; i++){
+             cardCode <<=1;
+             cardCode |= databits[i];
+          }    
+          break;
+  
+        // 34 bit HID Generic 
+        case 34:  
+          for (i=1; i<17; i++){
+             facilityCode <<=1;
+             facilityCode |= databits[i];
+          }
+          
+          // card code
+          for (i=17; i<33; i++){
+             cardCode <<=1;
+             cardCode |= databits[i];
+          }    
+          break;
+     
+        // 35 bit HID Corporate 1000 format
+        // facility code = bits 2 to 14     
+        case 35:  
+          for (i=2; i<14; i++){
+             facilityCode <<=1;
+             facilityCode |= databits[i];
+          }
+          
+          // card code = bits 15 to 34
+          for (i=14; i<34; i++){
+             cardCode <<=1;
+             cardCode |= databits[i];
+          }    
+          break;
 
     }
-    return;
-  
+    return;  
 }
 
-
-//////////////////////////////////////
 // Function to append the card value (bitHolder1 and bitHolder2) to the necessary array then tranlate that to
 // the two chunks for the card value that will be output
 void getCardValues() {
