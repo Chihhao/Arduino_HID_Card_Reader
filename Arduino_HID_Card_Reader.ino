@@ -1,3 +1,10 @@
+// Wiring:
+// D2  ----------------- DATA0 (DATA)  (Green)
+// D3  ----------------- DATA1 (CLOCK) (WHITE)
+// 5V  -- (升壓板 12V) -- DC+           (Red)
+// GND -- (升壓板 GND) -- GND           (Black)
+// 
+
 #define MAX_BITS 100                 // max number of bits 
 #define WEIGAND_WAIT_TIME  3000      // time to wait for another weigand pulse.  
 
@@ -94,29 +101,26 @@ void loop(){
   }
 }
 
-// PRINTBITS function
-void printBits(){
-      // I really hope you can figure out what this function does
-      /*
-      Serial.print(bitCount);
-      Serial.print(" bit card. ");
-      Serial.print("FC = ");
-      Serial.print(facilityCode);
-      Serial.print(", CC = ");
-      Serial.print(cardCode);
-      Serial.print(", 44bit HEX = ");
-      Serial.print(cardChunk1, HEX);
-      Serial.println(cardChunk2, HEX);
-      */
-      Serial.print("READ-"); 
-      if(facilityCode<10) { Serial.print("00");}
-      else if (facilityCode<100) { Serial.print("0");}
-      Serial.print(facilityCode);      
-      if(cardCode<10) { Serial.print("0000");}
-      else if (cardCode<100) { Serial.print("000");}
-      else if (cardCode<1000) { Serial.print("00");}
-      else if (cardCode<10000) { Serial.print("0");}
-      Serial.println(cardCode);
+void printBits(){      
+    Serial.print(bitCount);
+    Serial.print(" bit card. ");
+    Serial.print("FC = ");
+    Serial.print(facilityCode);
+    Serial.print(", CC = ");
+    Serial.print(cardCode);
+    Serial.print(", 44bit HEX = ");
+    Serial.print(cardChunk1, HEX);
+    Serial.println(cardChunk2, HEX);
+      
+//      Serial.print("READ-"); 
+//      if(facilityCode<10) { Serial.print("00");}
+//      else if (facilityCode<100) { Serial.print("0");}
+//      Serial.print(facilityCode);      
+//      if(cardCode<10) { Serial.print("0000");}
+//      else if (cardCode<100) { Serial.print("000");}
+//      else if (cardCode<1000) { Serial.print("00");}
+//      else if (cardCode<10000) { Serial.print("0");}
+//      Serial.println(cardCode);
 }
 
 void getCardNumAndSiteCode(){

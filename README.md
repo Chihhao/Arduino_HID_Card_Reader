@@ -1,10 +1,11 @@
 # Arduino_HID_Card_Reader  
 
 ## 成品如下  
-![](image/IMG_3340.jpg)
-![](image/IMG_3339.jpg)
+![](image/hidreader.jpg)
+![](image/arduino.jpg)
+![](image/wiring.jpg)
+![](image/card.jpg)
 ![](image/serial.png)
-![](image/mycard.png)
 
 ## 材料  
 (1) Arduino Nano  
